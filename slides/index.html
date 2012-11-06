@@ -1,464 +1,597 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
-	<head>
-		<meta charset="utf-8">
-
-		<title>Big Data, Real Time - Itay Neeman (CascadiaJS 2012)</title>
-
-		<meta name="author" content="Itay Neeman">
-
-		<meta name="apple-mobile-web-app-capable" content="yes" />
-		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-
-		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/default.css" id="theme">
-
-		<!-- For syntax highlighting -->
-		<link rel="stylesheet" href="lib/css/zenburn.css">
-
-		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
-		<script>
-			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
-		</script>
-
-		<!--[if lt IE 9]>
-		<script src="lib/js/html5shiv.js"></script>
-		<![endif]-->
-	</head>
-
-	<body>
-
-		<div class="reveal">
-
-<div class="slides">
-    <section>
-        <h1>{big, data}</h1>
-        <h2>x</h2>
-        <h1>{real, time}</h1>
-        <div>
-            <br>
-        </div>
-        <div style="text-align: left;">&nbsp; &nbsp; &nbsp; Itay Neeman</div>
-        <div style="text-align: left;">&nbsp; &nbsp; &nbsp;&nbsp;@itayneeman</div>
-        <div style="text-align: left;">&nbsp; &nbsp; &nbsp;&nbsp;Sr. Engineer, Splunk Developer Platform</div>
-    </section>
-    <section>
-        <h2>Splunk in 1 slide<br>
-            <br>
-        </h2>
-        <div>
-            <ul>
-                <li>Data engine for "evented" data</li>
-                <li>Evented = notion of different events</li>
-                <li>Only create and read, no update/delete</li>
-                <li>Canonical example: log files</li>
-                <li>Other examples: Twitter, purchases</li>
-                <li>Scale from 500MB/day to 50TB+/day</li>
-            </ul>
-        </div>
-    </section>
-    <section>
-        <h2>buzz word disclaimer</h2>
-        <div>
-            <br>
-        </div>
-        <div>
-            <ul>
-                <li>You might hear some buzzwords</li>
-                <li>Ignore them</li>
-                <li>Everybody has data to analyze</li>
-            </ul>
-            <div style="text-align: left;">
-                <br>
-            </div>
-        </div>
-        <div style="text-align: left;">
-            <br>
-        </div>
-        <h2>DATA FOR ALL!</h2>
-    </section>
-    <section>
-        <section>
-            <h2>what makes up (big) data?</h2>
-            <div>
-                <br>
-            </div>
-            <div>
-                <br>
-            </div>
-            <div>
-                <br>
-            </div>
-            <div>
-                <ol>
-                    <li>Ingestion (send the data)</li>
-                    <li>Asking (query the data)</li>
-                    <li>Answering (understand the data)</li>
-                </ol>
-            </div>
-        </section>
-        <section>
-            <h2>What does real time mean?<br>
-            </h2>
-            <div>
-                <br>
-            </div>
-            <div>Data available for analysis with minimal latency (&lt;1s)</div>
-            <div>
-                <br>
-            </div>
-            <div>
-                <br>
-            </div>
-            <h6 style="text-align: left;">&nbsp; &nbsp; &nbsp; Splunk: real-time searches</h6>
-            <div>
-                <ol>
-                    <li>Time cursor goes forward (instead of back)</li>
-                    <li>Ability to specify sliding windows</li>
-                </ol>
-            </div>
-            <div style="text-align: left;">
-                <br>
-            </div>
-            <blockquote>What are the terms most associated with 'election' in a 10 minute sliding window?</blockquote>
-        </section>
-    </section>
-    <section>
-        <h2>(big) Data tools</h2>
-        <div>
-            <br>
-        </div>
-        <div>There are many tools for data:</div>
-        <div>
-            <ol>
-                <li>Hadoop (real-time?)</li>
-                <li>Splunk</li>
-                <li>Twitter Storm</li>
-                <li>NoSQL DBs</li>
-                <li>SQL DBs</li>
-                <li>Raw code (JSFTW!)</li>
-            </ol>
-            <div style="text-align: left;">
-                <br>
-            </div>
-        </div>
-        <p>&nbsp; * I'm most familiar with Splunk, so examples will use it, but techniques apply universally</p>
-    </section>
-    <section>
-        <h2>why Javascript for (Big) data?</h2>
-        <div>
-            <br>
-        </div>
-        <div>
-            <br>
-        </div>
-        <div>
-            <br>
-        </div>
-        <blockquote>Bring the computation to the data</blockquote>
-        <p>... that involves I/O</p>
-        <p>
-        <br>
-    </p>
-    <p>
-    <br>
-</p>
-<h5>
-    <br>
-</h5>
-</section>
-<section>
-    <h2>
-        <br>
-    </h2>
-    <div>
-        <br>
-    </div>
-    <div>
-        <br>
-    </div>
-    <div>
-        <br>
-    </div>
-    <h2>
-        <h2>JAVASCRIPT EVENTED I/O FTW!</h2>
-    </h2>
-</section>
-<section>
-	<section>
-	    <h2>ingestion</h2>
-	<h6>send the data</h6>
-	<h6>
-	    <br>
-	</h6>
-	<p>
-	</p>
-	<ul>
-	    <li>TCP/UDP/HTTP/Log files all great choices</li>
-	    <li>Lots of great Node.js options:
-	<br>
-	<ol style="margin-left: 100px;">
-	            <li>
-	<a href="https://github.com/trentm/node-bunyan">Bunyan</a>
-	</li>
-	<li>
-	    <a href="https://github.com/flatiron/winston">Winston</a>
-	<br>
-	    <br>
-	</li>
-	        </ol>
-	        </li>
-	<li>Think how to break your data into logical "events"</li>
-	<li>
-		<p>As simple as:</p>
-		<pre><code class="javascript">
-splunk.log({my: "event", is: "awesome!!!111!!!!"});
-		</code></pre>
-	</li>
-	    
-	</ul>
-	<div style="text-align: left;">
-	    <br>
-	</div>
-	</section>
-</section>
-    <section>
-        <section>
-            <h2>asking questions</h2>
-            <h6>query the data</h6>
-            <p>
-            <br>
-        </p>
-        <h3>Pattern</h3>
-        <p>send a query, (eventually) get data back</p>
-        <p>
-            <br/>
-        </p>
-        <h3>Problem</h3>
-        <p>Might take a while
-        </p>
-        <p><br/></p>
-        </p>
-        <h3>Solution</h3>
-        <p>Asynchronous I/O</p>
-</section>
-<section>
-    <h2>ask, and you shall receive</h2>
-<div>
-    <div>
-        <br>
-    </div>
-    <div class="fragment">
-    <img src="http://d2g1zjdg4phkb4.cloudfront.net/5haalHuT3vPGlnOVphCQR3bHErs=">
-    <br>
-</div>
-</div>
-<div>
-    <br>
-</div>
-<h2 class="fragment">eventually</h2>
-
-
-
-</section>
-<section>
-    <h2>DEMO!</h2>
-</section>
-</section>
-<section>
-    <section>
-        <h2>Answering</h2>
-        <h6>understand your data</h6>
-        <p>
-        <br>
-    </p>
-    <p>You asked a question...</p>
-    <p>... and even got some data back</p>
-    <p>
-    <br>
-</p>
-<h2>
-    <font color="#ffff99">now what?</font>
-</h2>
-</section>
-<section>
-    <h2>REAL time makes this harder</h2>
-<div>Why?</div>
-<div>
-    <br>
-</div>
-<div class="fragment">Because</div>
-<div class="fragment">The</div>
-<div class="fragment">Answers</div>
-<div class="fragment">Keep</div>
-<div class="fragment">Coming</div>
-</section>
-    <section>
-        <h2>visualization to the rescue?</h2>
-<div>
-    <br>
-</div>
-<div>
-    <ul>
-        <li>Visualization can be useful<br>
-        </li>
-        <li>Doesn't have to be complicated</li>
-        <li>Table = visualization</li>
-        <li>Bar chart = visualization<br>
-            <br>
-        </li>
-        <li>Crazy flying circles = not so useful!</li>
-    </ul>
-</div>
-<div class="fragment">
-	<div class="">
-	    <img height="150px" src="http://d2g1zjdg4phkb4.cloudfront.net/5R1SITX80PnvpppX31I0Eo2AOys=">
-	    <br>
-	</div>
-    <blockquote class="">Don't make me go crazy, fool!</blockquote>
-</div>
-</section>
-        <section>
-            <h2>browser + node.js</h2>
-            <div>
-                <br>
-            </div>
-            <div>
-                <ul>
-                    <li>Node queries the data engine</li>
-                    <li>Browser displays answer</li>
-                    <li>Need to communicate<br>
-                        <br>
-                    </li>
-                    <li>Low impedance</li>
-                    <li>Many options: <a href="http://socket.io/">socket.io</a>, <a href="https://github.com/substack/dnode">dnode</a>, ...</li>
-                </ul>
-            </div>
-        </section>
-        <section>
-            <h2>node.js</h2>
-            <div>
-                <br>
-            </div>
-            <div>
-                <ul>
-                    <li>Networking (TCP/HTTP/...) is first class</li>
-                    <li>Great library support<br>
-                        <br>
-                    </li>
-                    <li>Streams are a great fit (more on this later)</li>
-                </ul>
-            </div>
-        </section>
-        <section>
-            <h2>browser</h2>
-<div>
-    <br>
-</div>
-<div>
-    <br>
-    </div>
-<div>
-    <ul>
-        <li>Lots of great tools for browser</li>
-        <li>d3 is the most popular</li>
-        <li>Raw <code>&lt;canvas/&gt;</code>&nbsp;</li>
-        <li>Highcharts
-        </li>
-<li>Good old <code>&lt;table/&gt;</code>, <code>&lt;ul/&gt;</code> and friends
-</li>
-</ul>
     
+    <head>
+        <meta charset="utf-8">
+        <title>Big Data, Real Time - Itay Neeman (CascadiaJS 2012)</title>
+        <meta name="author"
+        content="Itay Neeman">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <link rel="stylesheet" href="css/reveal.css" type="text/css">
+        <link rel="stylesheet" href="css/theme/default.css" id="theme" type="text/css">
+        <!-- For syntax highlighting -->
+        <link rel="stylesheet" href="lib/css/zenburn.css" type="text/css">
+        <!-- If the query includes 'print-pdf', use the PDF print sheet -->
+        <script type="text/javascript">
+            document.write('<link rel="stylesheet" href="css/print/' + (window.location.search.match(/print-pdf/gi) ? 'pdf' : 'paper') + '.css" type="text/css" media="print">');
+        </script>
+        
+        <style>
+            #demo1 {
+                margin: 0px auto;
+                margin-top: 100px;
+            }
+            
+            #demo1 table {
+                margin: 0px auto;
+            }
+            
+            #demo1 table h6 {
+                color: #FFFF99;
+            }
+            
+            #demo1 table td {
+                font-family: "Lato", Times, "Times New Roman", serif;
+                font-size: 16px;
+                font-weight: 200;
+                letter-spacing: -0.02em;
+                color: #EEE;
+                line-height: 20px;
+            }
+            
+            #demo1 table td.count {
+                color: #FFFF99;
+            }
+        </style>
+        <!--[if lt IE 9]>
+            <script src="lib/js/html5shiv.js"></script>
+        <![endif]-->
+    </head>
+    
+    <body>
+        <div class="reveal">
+            <div class="slides">
+                <section>
+                     <h1>
+                        {big, data}
+                    </h1>
 
-</div>
-<code>
+                     <h2>
+                        x
+                    </h2>
 
-</code>
-</section>
-            <section>
-                <h2>STREAMS<br>
-                </h2>
-                <div>
-                    <div style="font: inherit; ">
+                     <h1>
+                        {real, time}
+                    </h1>
+
+                    <div>
                         <br>
                     </div>
-                    <div style="font: inherit; ">
+                    <div style="text-align: left;">&nbsp; &nbsp; &nbsp; Itay Neeman</div>
+                    <div style="text-align: left;">&nbsp; &nbsp; &nbsp;&nbsp;@itayneeman</div>
+                    <div style="text-align: left;">&nbsp; &nbsp; &nbsp;&nbsp;Sr. Engineer, Splunk Developer Platform</div>
+                </section>
+                <section>
+                     <h2>
+                        Splunk in 1 slide<br>
+                        <br>
+                    </h2>
+
+                    <div>
                         <ul>
-                            <li>We are dealing with evented data</li>
-                            <li>Query responses are also evented<br>
-                                <br>
-                            </li>
-                            <li>Pipelines are a natural fit<br>
-                                <br>
-                            </li>
-                            <li>Response comes in</li>
-                            <li>Gets transformed</li>
-                            <li>Goes out to browser</li>
+                            <li>Data engine for "evented" data</li>
+                            <li>Evented = notion of different events</li>
+                            <li>Only create and read, no update/delete</li>
+                            <li>Canonical example: log files</li>
+                            <li>Other examples: Twitter, purchases</li>
+                            <li>Scale from 500MB/day to 50TB+/day</li>
                         </ul>
                     </div>
-                </div>
-            </section>
-        </section>
-        <section>
-            <section>
-                <h2>Putting it all together!</h2>
-                <div>
+                </section>
+                <section>
+                     <h2>
+                        buzz word disclaimer
+                    </h2>
+
+                    <div>
+                        <br>
+                    </div>
+                    <div>
+                        <ul>
+                            <li>You might hear some buzzwords</li>
+                            <li>Ignore them</li>
+                            <li>Everybody has data to analyze</li>
+                        </ul>
+                        <div style="text-align: left;">
+                            <br>
+                        </div>
+                    </div>
+                    <div style="text-align: left;">
+                        <br>
+                    </div>
+                     <h2>
+                        DATA FOR ALL!
+                    </h2>
+
+                </section>
+                <section>
+                    <section>
+                         <h2>
+                            what makes up (big) data?
+                        </h2>
+
+                        <div>
+                            <br>
+                        </div>
+                        <div>
+                            <br>
+                        </div>
+                        <div>
+                            <br>
+                        </div>
+                        <div>
+                            <ol>
+                                <li>Ingestion (send the data)</li>
+                                <li>Asking (query the data)</li>
+                                <li>Answering (understand the data)</li>
+                            </ol>
+                        </div>
+                    </section>
+                    <section>
+                         <h2>
+                            What does real time mean?<br>
+                        </h2>
+
+                        <div>
+                            <br>
+                        </div>
+                        <div>Data available for analysis with minimal latency (&lt;1s)</div>
+                        <div>
+                            <br>
+                        </div>
+                        <div>
+                            <br>
+                        </div>
+                         <h6 style="text-align: left;">
+                            &nbsp; &nbsp; &nbsp; Splunk: real-time searches
+                        </h6>
+
+                        <div>
+                            <ol>
+                                <li>Time cursor goes forward (instead of back)</li>
+                                <li>Ability to specify sliding windows</li>
+                            </ol>
+                        </div>
+                        <div style="text-align: left;">
+                            <br>
+                        </div>
+                        <blockquote>What are the terms most associated with 'election' in a 10 minute sliding
+                            window?</blockquote>
+                    </section>
+                </section>
+                <section>
+                     <h2>
+                        (big) Data tools
+                    </h2>
+
+                    <div>
+                        <br>
+                    </div>
+                    <div>There are many tools for data:</div>
+                    <div>
+                        <ol>
+                            <li>Hadoop (real-time?)</li>
+                            <li>Splunk</li>
+                            <li>Twitter Storm</li>
+                            <li>NoSQL DBs</li>
+                            <li>SQL DBs</li>
+                            <li>Raw code (JSFTW!)</li>
+                        </ol>
+                        <div style="text-align: left;">
+                            <br>
+                        </div>
+                    </div>
+                    <p>&nbsp; * I'm most familiar with Splunk, so examples will use it, but techniques
+                        apply universally</p>
+                </section>
+                <section>
+                     <h2>
+                        why Javascript for (Big) data?
+                    </h2>
+
+                    <div>
+                        <br>
+                    </div>
+                    <div>
+                        <br>
+                    </div>
+                    <div>
+                        <br>
+                    </div>
+                    <blockquote>Bring the computation to the data</blockquote>
+                    <p>... that involves I/O</p>
+                    <p>
+                        <br>
+                    </p>
+                    <p>
+                        <br>
+                    </p>
+                     <h5>
+                        <br>
+                    </h5>
+
+                </section>
+                <section>
+                     <h2>
+                        <br>
+                    </h2>
+
+                    <div>
+                        <br>
+                    </div>
+                    <div>
+                        <br>
+                    </div>
+                    <div>
+                        <br>
+                    </div>JAVASCRIPT EVENTED I/O FTW!</section>
+                <section>
+                    <section>
+                         <h2>
+                            ingestion
+                        </h2>
+
+                         <h6>
+                            send the data
+                        </h6>
+
+                         <h6>
+                            <br>
+                        </h6>
+
+                        <ul>
+                            <li>TCP/UDP/HTTP/Log files all great choices</li>
+                            <li>Lots of great Node.js options:
+                                <br>
+                                <ol style="margin-left: 100px;">
+                                    <li> <a href="https://github.com/trentm/node-bunyan">Bunyan</a>
+
+                                    </li>
+                                    <li> <a href="https://github.com/flatiron/winston">Winston</a>
+                                        <br>
+                                        <br>
+                                    </li>
+                                </ol>
+                            </li>
+                            <li>Think how to break your data into logical "events"</li>
+                            <li>
+                                <p>As simple as:</p> <pre>
+<code class="javascript">
+splunk.log({my: "event", is: "awesome!!!111!!!!"});
+        </code>
+</pre>
+
+                            </li>
+                        </ul>
+                        <div style="text-align: left;">
+                            <br>
+                        </div>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                         <h2>
+                            asking questions
+                        </h2>
+
+                         <h6>
+                            query the data
+                        </h6>
+
+                        <p>
+                            <br>
+                        </p>
+                         <h3>
+                            Pattern
+                        </h3>
+
+                        <p>send a query, (eventually) get data back</p>
+                        <p>
+                            <br>
+                        </p>
+                         <h3>
+                            Problem
+                        </h3>
+
+                        <p>Might take a while</p>
+                        <p>
+                            <br>
+                        </p>
+                         <h3>
+                            Solution
+                        </h3>
+
+                        <p>Asynchronous I/O</p>
+                    </section>
+                    <section>
+                         <h2>
+                            ask, and you shall receive
+                        </h2>
+
+                        <div>
+                            <div>
+                                <br>
+                            </div>
+                            <div class="fragment">
+                                <img src="http://d2g1zjdg4phkb4.cloudfront.net/5haalHuT3vPGlnOVphCQR3bHErs=">
+                                <br>
+                            </div>
+                        </div>
+                        <div>
+                            <br>
+                        </div>
+                         <h2 class="fragment">
+                            eventually
+                        </h2>
+
+                    </section>
+                    <section>
+                        <h2>
+                            DEMO!
+                        </h2>
+                        <blockquote>
+                            What are the top categories that men and women check into
+                            on Foursquare in the past 15 minutes?
+                        </blockquote>
+                        <br/>
+                        <button id="demo1-button" style="margin: 0px auto; font-size: 50;">ASK!</button>
+
+                    </section>
+                    <section>
+                        <h2>ANSWERS!</h2>
+                        <div id="demo1"></div>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                         <h2>
+                            Answering
+                        </h2>
+
+                         <h6>
+                            understand your data
+                        </h6>
+
+                        <p>
+                            <br>
+                        </p>
+                        <p>You asked a question...</p>
+                        <p>... and even got some data back</p>
+                        <p>
+                            <br>
+                        </p>
+                         <h2>
+                            <font color="#FFFF99">now what?</font>
+                        </h2>
+
+                    </section>
+                    <section>
+                         <h2>
+                            REAL time makes this harder
+                        </h2>
+
+                        <div>Why?</div>
+                        <div>
+                            <br>
+                        </div>
+                        <div class="fragment">Because</div>
+                        <div class="fragment">The</div>
+                        <div class="fragment">Answers</div>
+                        <div class="fragment">Keep</div>
+                        <div class="fragment">Coming</div>
+                    </section>
+                    <section>
+                         <h2>
+                            visualization to the rescue?
+                        </h2>
+
+                        <div>
+                            <br>
+                        </div>
+                        <div>
+                            <ul>
+                                <li>Visualization can be useful
+                                    <br>
+                                </li>
+                                <li>Doesn't have to be complicated</li>
+                                <li>Table = visualization</li>
+                                <li>Bar chart = visualization
+                                    <br>
+                                    <br>
+                                </li>
+                                <li>Crazy flying circles = not so useful!</li>
+                            </ul>
+                        </div>
+                        <div class="fragment">
+                            <div class="">
+                                <img height="150px" src="http://d2g1zjdg4phkb4.cloudfront.net/5R1SITX80PnvpppX31I0Eo2AOys=">
+                                <br>
+                            </div>
+                            <blockquote class="">Don't make me go crazy, fool!</blockquote>
+                        </div>
+                    </section>
+                    <section>
+                         <h2>
+                            browser + node.js
+                        </h2>
+
+                        <div>
+                            <br>
+                        </div>
+                        <div>
+                            <ul>
+                                <li>Node queries the data engine</li>
+                                <li>Browser displays answer</li>
+                                <li>Need to communicate
+                                    <br>
+                                    <br>
+                                </li>
+                                <li>Low impedance</li>
+                                <li>Many options: <a href="http://socket.io/">socket.io</a>, <a href="https://github.com/substack/dnode">dnode</a>,
+                                    ...</li>
+                            </ul>
+                        </div>
+                    </section>
+                    <section>
+                         <h2>
+                            node.js
+                        </h2>
+
+                        <div>
+                            <br>
+                        </div>
+                        <div>
+                            <ul>
+                                <li>Networking (TCP/HTTP/...) is first class</li>
+                                <li>Great library support
+                                    <br>
+                                    <br>
+                                </li>
+                                <li>Streams are a great fit (more on this later)</li>
+                            </ul>
+                        </div>
+                    </section>
+                    <section>
+                         <h2>
+                            browser
+                        </h2>
+
+                        <div>
+                            <br>
+                        </div>
+                        <div>
+                            <br>
+                        </div>
+                        <div>
+                            <ul>
+                                <li>Lots of great tools for browser</li>
+                                <li>d3 is the most popular</li>
+                                <li>Raw <code>&lt;canvas/&gt;</code>&nbsp;</li>
+                                <li>Highcharts</li>
+                                <li>Good old <code>&lt;table/&gt;</code>, <code>&lt;ul/&gt;</code> and friends</li>
+                            </ul>
+                        </div>
+                    </section>
+                    <section>
+                         <h2>
+                            STREAMS<br>
+                        </h2>
+
+                        <div>
+                            <div style="font: inherit;">
+                                <br>
+                            </div>
+                            <div style="font: inherit;">
+                                <ul>
+                                    <li>We are dealing with evented data</li>
+                                    <li>Query responses are also evented
+                                        <br>
+                                        <br>
+                                    </li>
+                                    <li>Pipelines are a natural fit
+                                        <br>
+                                        <br>
+                                    </li>
+                                    <li>Response comes in</li>
+                                    <li>Gets transformed</li>
+                                    <li>Goes out to browser</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                         <h2>
+                            Putting it all together!
+                        </h2>
+
+                        <div>
+                            <br>
+                        </div>
+                        <div>
+                            <br>
+                        </div>
+                        <div>
+                            <ol>
+                                <li>Ask a question with Node.js
+                                    <br>
+                                </li>
+                                <li>Get the raw response as a stream
+                                    <br>
+                                </li>
+                                <li>Transform it</li>
+                                <li>Send to browser</li>
+                                <li>Display in human understandable fashion</li>
+                            </ol>
+                        </div>
+                    </section>
+                    <section>
+                         <h2>
+                            DEMO!
+                        </h2>
+
+                    </section>
+                </section>
+                <section>
+                    <section>
+                         <h2>
+                            <br>
+                        </h2>
+
+                         <h2>
+                            <br>
+                        </h2>
+
+                        <div>
+                            <br>
+                        </div>
+                         <h1>
+                            No questions!
+                        </h1>
+
+                    </section>
+                    <section>
+                        <br>
+                        <br>
+                        <br>
+                         <h2>
+                            mention @splunkdev for t-shirt!
+                        </h2>
+
+                    </section>
+                    <section>
+                        <br>
+                        <br>
+                        <br>
+                         <h2>
+                            We're hiring!
+                        </h2>
+
+                    </section>
+                </section>
+                <section>
                     <br>
-                </div>
-                <div>
                     <br>
-                </div>
-                <div>
-                    <ol>
-                        <li>Ask a question with Node.js<br>
-                        </li>
-                        <li>Get the raw response as a stream<br>
-                        </li>
-                        <li>Transform it</li>
-                        <li>Send to browser</li>
-                        <li>Display in human understandable fashion</li>
-                    </ol>
-                </div>
-            </section>
-            <section>
-                <h2>DEMO!</h2>
-            </section>
-        </section>
-        <section>
-            <section>
-                <h2>
                     <br>
-                </h2>
-                <h2>
-                    <br>
-                </h2>
-                <div>
-                    <br>
-                </div>
-                <h1>No questions!</h1>
-            </section>
-            <section>
-            	<br/>
-            	<br/>
-            	<br/>
-                <h2>mention @splunkdev for t-shirt!</h2>
-            </section>
-            <section>
-            	<br/>
-            	<br/>
-            	<br/>
-                <h2>We're hiring!</h2>
-            </section>
-        </section>
-        <section>
-            <br/>
-            <br/>
-            <br/>
-            <h1>THANK YOU!</h1>
-       	</section>
-       	<section>
-            <pre style="margin-top: -100px;">$ npm install -g biggerboat
+                     <h1>
+                        THANK YOU!
+                    </h1>
+
+                </section>
+                <section> <pre style="margin-top: -100px;">
+$ npm install -g biggerboat
 ...
 $ biggerboat
 
@@ -492,43 +625,76 @@ $ biggerboat
      
      
 </pre>
-            <div style="text-align: left;">
-                <br>
+
+                    <div style="text-align: left;">
+                        <br>
+                    </div>
+                </section>
             </div>
-        </section>
-    </div> <!-- slides -->
+            <!-- slides -->
+        </div>
+        <script src="lib/js/head.min.js" type="text/javascript"></script>
+        <script src="./assets/js/classlist.js" type="text/javascript"></script>
+        <script src="js/reveal.min.js" type="text/javascript"></script>
+        
+        
+        <script src="/javascripts/jquery-1.8.2.min.js" type="text/javascript"></script>
+        <script src="/javascripts/underscore.js" type="text/javascript"></script>
+        <script src="demo1.js" type="text/javascript"></script>
+        <!--<script src="demo2.js" type="text/javascript"></script>-->
+        
+        
+        <script type="text/javascript">
+            // Full list of configuration options available here:
+            // https://github.com/hakimel/reveal.js#configuration
+            Reveal.initialize({
+                controls: true,
+                progress: true,
+                history: true,
+                theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+                transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/none
+                // Optional libraries used to extend on reveal.js
+                dependencies: [{
+                    src: 'lib/js/classList.js',
+                    condition: function () {
+                        return !document.body.classList;
+                    }
+                }, {
+                    src: 'plugin/markdown/showdown.js',
+                    condition: function () {
+                        return !!document.querySelector('[data-markdown]');
+                    }
+                }, {
+                    src: 'plugin/markdown/markdown.js',
+                    condition: function () {
+                        return !!document.querySelector('[data-markdown]');
+                    }
+                }, {
+                    src: 'plugin/highlight/highlight.js',
+                    async: true,
+                    callback: function () {
+                        hljs.initHighlightingOnLoad();
+                    }
+                }, {
+                    src: 'plugin/zoom-js/zoom.js',
+                    async: true,
+                    condition: function () {
+                        return !!document.body.classList;
+                    }
+                }, {
+                    src: 'plugin/notes/notes.js',
+                    async: true,
+                    condition: function () {
+                        return !!document.body.classList;
+                    }
+                }]
+            });
 
+            $('#demo1-button').click(function() {
+                Reveal.next();
+                runDemo1(); 
+            });
+        </script>
+    </body>
 
-		</div>
-
-		<script src="lib/js/head.min.js"></script>
-  		<script src="./assets/js/classlist.js"></script>
-		<script src="js/reveal.min.js"></script>
-
-		<script>
-
-			// Full list of configuration options available here:
-			// https://github.com/hakimel/reveal.js#configuration
-			Reveal.initialize({
-				controls: true,
-				progress: true,
-				history: true,
-
-				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
-				transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/none
-
-				// Optional libraries used to extend on reveal.js
-				dependencies: [
-					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
-					{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
-					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
-					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
-				]
-			});
-
-		</script>
-
-	</body>
 </html>
