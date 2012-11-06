@@ -345,7 +345,7 @@ splunk.log({my: "event", is: "awesome!!!111!!!!"});
                             on Foursquare in the past 15 minutes?
                         </blockquote>
                         <br/>
-                        <button id="demo1-button" style="margin: 0px auto; font-size: 50;">ASK!</button>
+                        <button id="demo1-button" style="margin: 0px auto; font-size: 50pt;">ASK!</button>
 
                     </section>
                     <section>
@@ -640,9 +640,9 @@ $ biggerboat
         
         <script src="/javascripts/jquery-1.8.2.min.js" type="text/javascript"></script>
         <script src="/javascripts/underscore.js" type="text/javascript"></script>
+        <script src="/javascripts/spin.js" type="text/javascript"></script>
         <script src="demo1.js" type="text/javascript"></script>
         <!--<script src="demo2.js" type="text/javascript"></script>-->
-        
         
         <script type="text/javascript">
             // Full list of configuration options available here:
@@ -690,7 +690,29 @@ $ biggerboat
                 }]
             });
 
+                
+                
             $('#demo1-button').click(function() {
+                var opts = {
+                  lines: 13, // The number of lines to draw
+                  length: 7, // The length of each line
+                  width: 4, // The line thickness
+                  radius: 10, // The radius of the inner circle
+                  corners: 1, // Corner roundness (0..1)
+                  rotate: 0, // The rotation offset
+                  color: '#FFF', // #rgb or #rrggbb
+                  speed: 1, // Rounds per second
+                  trail: 60, // Afterglow percentage
+                  shadow: false, // Whether to render a shadow
+                  hwaccel: false, // Whether to use hardware acceleration
+                  className: 'spinner', // The CSS class to assign to the spinner
+                  zIndex: 2e9, // The z-index (defaults to 2000000000)
+                  top: 'auto', // Top position relative to parent in px
+                  left: 'auto' // Left position relative to parent in px
+                };
+                var target = document.getElementById('demo1');
+                var spinner = new Spinner(opts).spin(target);
+                
                 Reveal.next();
                 runDemo1(); 
             });
