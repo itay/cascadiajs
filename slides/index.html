@@ -40,6 +40,11 @@
                 line-height: 20px;
             }
             
+            #demo1-event {
+                font-size: 14px;
+                max-height: 450px;
+            }
+            
             #demo1 table td.count {
                 color: #FFFF99;
             }
@@ -340,6 +345,28 @@ splunk.log({my: "event", is: "awesome!!!111!!!!"});
                             eventually
                         </h2>
 
+                    </section>
+                    <section>
+                        <h2>What the data looks like</h2>
+                        <pre><code id="demo1-event" class="javascript">{
+   "checkin":{
+      "venue":{ "id":"4f2aa106e4b0035924109691", "name":"Running Trail On Cunningham" },
+      "mayor":{ "type":"stolen" },
+      "user":{ "gender":"male" },
+      "badges":[],
+      "created":1352317081,
+      "geolat":33.91781928688322,
+      "geolong":-84.57591082466139,
+      "timezone":"America\/New_York",
+      "primarycategory":{
+         "id":"4bf58dd8d48988d159941735",
+         "fullpathname":"Outdoors & Recreation:Hiking Trails",
+         "nodename":"Hiking Trails",
+         "iconurl":"https:\/\/foursquare.com\/img\/categories\/parks_outdoors\/hikingtrail_32.png"
+      }
+   }
+}</code></pre>
+                            
                     </section>
                     <section>
                         <h2>
