@@ -39,7 +39,8 @@ var server = http.createServer(app).listen(app.get('port'), function(){
 });
 
 var io = require("socket.io").listen(server);
-var streams = require('./data');  
+
+/*var streams = require('./data');  
 
 io.set('log level', 1);
 
@@ -61,5 +62,20 @@ io.sockets.on('connection', function (socket) {
   socket.on('disconnect', function() {
     streams.clear();
     streams.data.disconnect();
+  });
+});
+*/
+
+io.set('log level', 1);
+
+var demo2 = require('./routes/demo2');
+io.demo2 = io.of('/demo2').on('connection', function(socket) {
+  demo2.raw.connect();
+  demo2.transformed.on('data', function(data) {
+    socket.emit('data', data);
+  });
+  
+  socket.on('disconnect', function() {
+    demo2.raw.disconnect();
   });
 });

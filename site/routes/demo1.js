@@ -6,7 +6,7 @@ var service = new splunkjs.Service({
     username: "admin",
     password: "changeme",
     version: "5.0"
-})
+});
 
 module.exports = function(req, res) {
     service.login(function(err, success) {

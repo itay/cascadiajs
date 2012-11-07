@@ -43,6 +43,11 @@
             #demo1 table td.count {
                 color: #FFFF99;
             }
+            
+            #demo2 {
+                margin: 0px auto;
+                margin-top: 100px;
+            }
         </style>
         <!--[if lt IE 9]>
             <script src="lib/js/html5shiv.js"></script>
@@ -538,10 +543,20 @@ splunk.log({my: "event", is: "awesome!!!111!!!!"});
                         </div>
                     </section>
                     <section>
-                         <h2>
+                        <h2>
                             DEMO!
                         </h2>
+                        <blockquote>
+                            What are the words most correlated with Obama and Romney in
+                            a real-time 5-minute sliding window??
+                        </blockquote>
+                        <br/>
+                        <button id="demo2-button" style="margin: 0px auto; font-size: 50pt;">ASK!</button>
 
+                    </section>
+                    <section>
+                        <h2>ANSWERS!</h2>
+                        <div id="demo2"></div>
                     </section>
                 </section>
                 <section>
@@ -638,11 +653,20 @@ $ biggerboat
         <script src="js/reveal.min.js" type="text/javascript"></script>
         
         
+        <script src='js/d3.js'></script>
+        <script src='js/d3.geom.js'></script>
+        <script src='js/d3.layout.js'></script>
+        <script src='js/d3.geo.js'></script>
+        <script src='js/d3.layout.cloud.js'></script>
+        <script src='js/colorbrewer.js'></script>
+        
+        
         <script src="js/jquery-1.8.2.min.js" type="text/javascript"></script>
         <script src="js/underscore.js" type="text/javascript"></script>
         <script src="js/spin.js" type="text/javascript"></script>
+        <script src="/socket.io/socket.io.js"></script>
         <script src="demo1.js" type="text/javascript"></script>
-        <!--<script src="demo2.js" type="text/javascript"></script>-->
+        <script src="demo2.js" type="text/javascript"></script>
         
         <script type="text/javascript">
             // Full list of configuration options available here:
@@ -689,8 +713,6 @@ $ biggerboat
                     }
                 }]
             });
-
-                
                 
             $('#demo1-button').click(function() {
                 var opts = {
@@ -715,6 +737,11 @@ $ biggerboat
                 
                 Reveal.next();
                 runDemo1(); 
+            });
+                
+            $('#demo2-button').click(function() {                
+                Reveal.next();
+                runDemo2(); 
             });
         </script>
     </body>
