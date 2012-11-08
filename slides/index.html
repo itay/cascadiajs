@@ -53,6 +53,11 @@
                 margin: 0px auto;
                 margin-top: 100px;
             }
+            
+            #demo2-code code {
+                max-height: 600px;
+                width: 110%;
+            }
         </style>
         <!--[if lt IE 9]>
             <script src="lib/js/html5shiv.js"></script>
@@ -584,6 +589,32 @@ splunk.log({my: "event", is: "awesome!!!111!!!!"});
                     <section>
                         <h2>ANSWERS!</h2>
                         <div id="demo2"></div>
+                    </section>
+                    <section>
+<pre id="demo2-code"><code>var stream = new SplunkStreams.RealTime(service, searchOptions);
+var transform = new SplunkStreams.Transform(function(data, emit) {
+    var rows = data.rows;
+    
+    var terms = {max: 0, obama: {}, romney: {}};
+    _.each(rows, function(row) {
+        var candidate = row[0];
+        var term = row[1];
+        var count = parseInt(row[2]);
+        
+        if (term == "obama" || term == "romney") {
+            return;
+        }
+        
+        terms.max = Math.max(terms.max, count);
+        terms[candidate][term] = count;
+    });
+    
+    emit(terms);
+    
+    return true;
+});
+
+stream.pipe(transform).pipe( /*socket.io*/ )</code></pre>
                     </section>
                 </section>
                 <section>
